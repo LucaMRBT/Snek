@@ -7,6 +7,8 @@ import random
 import pydub
 from pydub import AudioSegment
 from pydub.playback import play
+from pygame.locals import *
+from pygame import mixer
 
 
 CHARACTERS = [
@@ -84,6 +86,10 @@ snake2_size = 40
 if (
     character == "23chafai.png" or character == "23morabito.png"
 ):  # Increase siwe according to lore
+    snake_size += 10
+if (
+    character == "23chafai.png" or character == "23morabito.png"
+):  # Increase size according to lore
     snake_size += 10
 snake_speed = 20 if DLC_ACTIVATED else 15
 snake2_speed = 20 if DLC_ACTIVATED else 15
@@ -173,6 +179,9 @@ for i, line in enumerate(lore_text):
 pygame.display.flip()
 pygame.time.wait(10000)  # Show lore for 10 seconds
 
+mixer.init()
+mixer.music.load("Driftveil.mp3")
+mixer.music.play()
 # Game loop
 game_over = False
 microtransaction_window = False
@@ -426,18 +435,35 @@ while not game_over:
         # Control game speed
         clock.tick(snake_speed)
 
-    # Display microtransaction window if active
+    # Display Upgrade window if active
     if microtransaction_window:
-        pygame.draw.rect(screen, (128, 128, 128), (200, 200, 600, 400))
-        pygame.draw.rect(screen, (0, 0, 0), (220, 220, 560, 360))
-        title_text = font.render("Upgrade", True, (255, 255, 255))
-        screen.blit(title_text, (300, 220))
-        y = 270
-        for item, price in items.items():
-            item_text = font.render(f"{item} - Price: €{price}", True, (255, 255, 255))
-            screen.blit(item_text, (250, y))
-            y += 40
+        microtransaction_window = False
+        screen.blit(background_img, (0, 0))
+        screen.blit(snake_img, (snake_x, snake_y))
+        pygame.draw.rect(screen, food_color, (food_x, food_y, food_size, food_size))
+        score_text = font.render("Score: " + str(score), True, (255, 255, 255))
+        level_text = font.render("Level: " + str(snake_level), True, (255, 255, 255))
+        xp_text = font.render(
+            "XP: " + str(snake_xp) + "/" + str(xp_needed), True, (255, 255, 255)
+        )
+        screen.blit(score_text, (10, 10))
+        screen.blit(level_text, (10, 50))
+        screen.blit(xp_text, (10, 90))
         pygame.display.flip()
+        k = random.randint(0, 3)
+        sound_file = upgrade_files[k]
+        pygame.mixer.music.load(sound_file)
+        pygame.mixer.music.play()
+        if k == 1:  # exp grows
+            snake_xp += 5
+        if k == 2:  # growth
+            snake_size += 2
+        if k == 3:  # speed
+            snake_speed += 1
+        pygame.time.wait(2000)
+        mixer.music.load("Driftveil.mp3")
+        mixer.music.play()
+
 
 # Define the credits
 credits_font_normal = pygame.font.Font("Roboto-Italic.ttf", 36)
@@ -471,7 +497,12 @@ credits_lines = [
 ]
 
 # Play game over sound
-game_over_sound.play()
+pygame.mixer.music.load("Snake Snake Snake.mp3")
+pygame.mixer.music.play()
+pygame.time.wait(2000)
+mixer.music.load("Driftveil.mp3")
+mixer.music.play()
+
 
 # Display the credits
 screen.fill((0, 0, 0))  # Clear screen
