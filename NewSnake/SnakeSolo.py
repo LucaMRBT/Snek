@@ -16,6 +16,7 @@ def play_solo():
         {"name": "Valérie", "image": "Pecresse.png"},
         {"name": "Jean Lassalle", "image": "Lassalle.png"},
         {"name": "La Noisette Nationale", "image": "MBappé.png"},
+        {"name": "Singleton", "image": "Silviu.png"},
         {"name": "23chafai", "image": "23chafai.png"},
         {"name": "23morabito", "image": "23morabito.png"},
     ]
@@ -148,7 +149,7 @@ def play_solo():
     screen.fill((0, 0, 0))  # Clear screen
     for i, line in enumerate(lore_text):
         text = lore_font.render(line, True, (255, 255, 255))
-        screen.blit(text, (500, 500 + i * 30))  # Adjust 30 for line spacing
+        screen.blit(text, (500, 500 + i * 50))  # Adjust 30 for line spacing
     pygame.display.flip()
     pygame.time.wait(8000)  # Show lore for 10 seconds
 

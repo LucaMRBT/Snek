@@ -16,6 +16,7 @@ CHARACTERS = [
     {"name": "Valérie", "image": "Pecresse.png"},
     {"name": "Jean Lassalle", "image": "Lassalle.png"},
     {"name": "La Noisette Nationale", "image": "MBappé.png"},
+    {"name": "Singleton", "image": "Silviu.png"},
     {"name": "23chafai", "image": "23chafai.png"},
     {"name": "23morabito", "image": "23morabito.png"},
 ]
@@ -41,19 +42,20 @@ else:
 
     # SELECT YOUR INGAME CHARACTER
     def character_selection():
-        print("Select your character:")
+        print("Select your character: ")
         for i, character in enumerate(CHARACTERS, start=1):
             print(f"{i}. {character['name']}")
 
         while True:
             try:
-                choice = int(input("Snake: "))
+                choice = int(input("Snake:"))
                 if 1 <= choice <= len(CHARACTERS):
                     return CHARACTERS[choice - 1]["image"]
                 else:
                     print("Invalid choice. Please enter a valid number.")
             except ValueError:
                 print("Invalid input. Please enter a number.")
+
 
 
     # Determine if the DLC is activated
@@ -78,8 +80,8 @@ else:
     food_color = (0, 255, 0)
 
     # Load Character image for the snake
-    character = character_selection()
-    character2 = character_selection()
+    character= character_selection()
+    character2= character_selection()
     snake_img = pygame.image.load(character)
     snake_img = pygame.transform.scale(snake_img, (40, 40))  # Increase size to 40x40 pixels
 
@@ -174,16 +176,16 @@ else:
     ignore_segments = 7
 
     # Add lore
-    lore_font = pygame.font.Font(None, 24)
+    lore_font = pygame.font.Font(None, 36)
     lore_text = [
-        "Après s'être fait courser par Norman toute sa vie le mineur en a enfin marre et décide ",
-        "de le confronter en face à face pour l'attraper",
-        "L'aideras-tu a réussir dans sa quête ?",
+        "Oh non, toi et ton co êtes pas d'accord pour le dinner de ce soir",
+        "Un seul moyen de départager : la Snake 1v1",
+        "Bonne chance aux deux, mais que le meilleur gagne"
     ]
     screen.fill((0, 0, 0))  # Clear screen
     for i, line in enumerate(lore_text):
         text = lore_font.render(line, True, (255, 255, 255))
-        screen.blit(text, (500, 500 + i * 30))  # Adjust 30 for line spacing
+        screen.blit(text, (500, 500 + i * 50))  # Adjust 30 for line spacing
     pygame.display.flip()
     pygame.time.wait(10000)  # Show lore for 10 seconds
 
@@ -391,17 +393,17 @@ else:
 
                 snake2_length += 1
                 microtransaction_window = True
-        
-        #Check collision with other player 
+
+        #Check collision with other player
             if pygame.Rect(snake_x, snake_y, snake_size, snake_size).colliderect(
                 pygame.Rect(snake2_x, snake2_y, snake2_size, snake2_size)
             ):
-                winner = 2 
+                winner = 2
                 game_over = True
             if pygame.Rect(snake2_x, snake2_y, snake2_size, snake2_size).colliderect(
                 pygame.Rect(snake_x, snake_y, snake_size, snake_size)
             ):
-                winner = 1 
+                winner = 1
                 game_over = True
 
             # Update food position
@@ -495,6 +497,7 @@ else:
     # Define the credits
     credits_font_normal = pygame.font.Font("Roboto-Italic.ttf", 36)
     credits_font_bold = pygame.font.Font("Roboto-Bold.ttf", 36)
+    winner_font = pygame.font.Font("Arabic.ttf", 60)
     credits_lines = [
         {"text": "SNAKE (version casse couilles)", "font": credits_font_bold},
         {"text": "Opéré par TON Ordinateur", "font": credits_font_normal},
@@ -529,23 +532,6 @@ else:
     pygame.time.wait(2000)
     mixer.music.load("Driftveil.mp3")
     mixer.music.play()
-
-
-    #Display winning player 
-    screen.fill((0, 0, 0))  # Clear screen
-    for i, line in enumerate(credits_lines):
-        text = line["font"].render("Le gagnant est le joueur"+str(winner), True, (255, 255, 255))
-        screen.blit(
-            text,
-            (
-                screen_width // 2 - text.get_width() // 2,
-                screen_height // 2 
-            ),
-        )  # Center the text
-    pygame.display.flip()
-
-    #5 seconds to display the winner
-    pygame.time.wait(5000)
 
     # Display the credits
     screen.fill((0, 0, 0))  # Clear screen
