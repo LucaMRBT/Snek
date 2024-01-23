@@ -5,38 +5,20 @@ import random
 import time
 import random
 import pydub
-from pydub import AudioSegment
 from pydub.playback import play
 from pygame.locals import *
 from pygame import mixer
-from SnakeSolo import play_solo
 
-CHARACTERS = [
-    {"name": "MatMaz", "image": "MatMaz.png"},
-    {"name": "Valérie", "image": "Pecresse.png"},
-    {"name": "Jean Lassalle", "image": "Lassalle.png"},
-    {"name": "La Noisette Nationale", "image": "MBappé.png"},
-    {"name": "23chafai", "image": "23chafai.png"},
-    {"name": "23morabito", "image": "23morabito.png"},
-]
+def play_solo():
 
-
-#SELECT YOUR GAMEMODE
-
-def multiplayer_selection():  # Renvoie une boléen True si le jeu est en multiplayer
-    res = False
-    print("Select your game mode")
-    print("1 - Singleplayer")
-    print("2 - Multiplayer")
-    choice = int(input("Game mode :"))
-    if choice == 2:
-        res = True
-    return res
-
-res = multiplayer_selection()
-if not res:
-    play_solo()
-else:
+    CHARACTERS = [
+        {"name": "MatMaz", "image": "MatMaz.png"},
+        {"name": "Valérie", "image": "Pecresse.png"},
+        {"name": "Jean Lassalle", "image": "Lassalle.png"},
+        {"name": "La Noisette Nationale", "image": "MBappé.png"},
+        {"name": "23chafai", "image": "23chafai.png"},
+        {"name": "23morabito", "image": "23morabito.png"},
+    ]
 
 
     # SELECT YOUR INGAME CHARACTER
@@ -79,34 +61,25 @@ else:
 
     # Load Character image for the snake
     character = character_selection()
-    character2 = character_selection()
     snake_img = pygame.image.load(character)
     snake_img = pygame.transform.scale(snake_img, (40, 40))  # Increase size to 40x40 pixels
 
-    snake2_img = pygame.image.load(character2)
-    snake2_img = pygame.transform.scale(snake2_img, (40, 40))
 
     # Define snake properties
     snake_size = 40
-    snake2_size = 40
     if (
         character == "23chafai.png" or character == "23morabito.png"
     ):  # Increase siwe according to lore
         snake_size += 10
     if (
-        character2 == "23chafai.png" or character2 == "23morabito.png"
+        character == "23chafai.png" or character == "23morabito.png"
     ):  # Increase size according to lore
-        snake2_size += 10
+        snake_size += 10
     snake_speed = 20 if DLC_ACTIVATED else 15
-    snake2_speed = 20 if DLC_ACTIVATED else 15
     if character == "MBappé.png":
         snake_speed = 25
-    if character2 == "MBappé.png":
-        snake2_speed = 25
     snake_level = 1
-    snake2_level = 1
     snake_xp = 0
-    snake2_xp = 0
     xp_needed = 10
 
 
@@ -127,17 +100,12 @@ else:
     ]
 
     # Define initial position of snake
-    snake_x = (screen_width * 3) // 4
+    snake_x = (screen_width ) // 2
     snake_y = screen_height // 2
     snake_dx = 0
     snake_dy = 0
 
-    snake2_x = screen_width // 4
-    snake2_y = screen_height // 2
-    snake2_dx = 0
-    snake2_dy = 0
-
-    # Define food properties
+    # Define initial food properties
     food_size = 20
     food_x = random.randint(0, screen_width - food_size) // food_size * food_size
     food_y = random.randint(0, screen_height - food_size) // food_size * food_size
@@ -161,15 +129,11 @@ else:
     snake_body = []
     snake_length = 1
 
-    snake2_body = []
-    snake2_length = 1
     # Define momentum properties
     momentum = 0.1
     snake_dx_momentum = 0
     snake_dy_momentum = 0
 
-    snake2_dx_momentum = 0
-    snake2_dy_momentum = 0
     # Define how many segments behind the head to ignore for collision
     ignore_segments = 7
 
@@ -270,18 +234,6 @@ else:
                         )
                         snake_length += 1
                         microtransaction_window = True
-                if event.key == pygame.K_z and snake2_dy_momentum != snake2_size:
-                    snake2_dx_momentum = 0
-                    snake2_dy_momentum = -snake2_size
-                elif event.key == pygame.K_s and snake2_dy_momentum != -snake2_size:
-                    snake2_dx_momentum = 0
-                    snake2_dy_momentum = snake2_size
-                elif event.key == pygame.K_q and snake2_dx_momentum != snake2_size:
-                    snake2_dx_momentum = -snake2_size
-                    snake2_dy_momentum = 0
-                elif event.key == pygame.K_d and snake2_dx_momentum != -snake2_size:
-                    snake2_dx_momentum = snake2_size
-                    snake2_dy_momentum = 0
         if not microtransaction_window:
             if DLC_ACTIVATED:  # Check if DLC is activated
                 # Generate a random RGB color for the food
@@ -295,22 +247,15 @@ else:
             snake_dx += (snake_dx_momentum - snake_dx) * momentum
             snake_dy += (snake_dy_momentum - snake_dy) * momentum
 
-            snake2_dx += (snake2_dx_momentum - snake2_dx) * momentum
-            snake2_dy += (snake2_dy_momentum - snake2_dy) * momentum
-
             # Ensure that velocity does not exceed max speed
             snake_dx = max(-snake_speed, min(snake_speed, snake_dx))
             snake_dy = max(-snake_speed, min(snake_speed, snake_dy))
 
-            snake2_dx = max(-snake2_speed, min(snake2_speed, snake2_dx))
-            snake2_dy = max(-snake2_speed, min(snake2_speed, snake2_dy))
 
             # Update snake position
             snake_x += snake_dx
             snake_y += snake_dy
 
-            snake2_x += snake2_dx
-            snake2_y += snake2_dy
 
             # Check collision with boundaries
             if (
@@ -319,17 +264,8 @@ else:
                 or snake_y < 0
                 or snake_y >= screen_height
             ):
-                winner = 2
                 game_over = True
 
-            if (
-                snake2_x < 0
-                or snake2_x >= screen_width
-                or snake2_y < 0
-                or snake2_y >= screen_height
-            ):
-                winner = 1
-                game_over = True
 
             # Check collision with food
             if pygame.Rect(snake_x, snake_y, snake_size, snake_size).colliderect(
@@ -364,46 +300,6 @@ else:
                 snake_length += 1
                 microtransaction_window = True
 
-            if pygame.Rect(snake2_x, snake2_y, snake2_size, snake2_size).colliderect(
-                pygame.Rect(food_x, food_y, food_size, food_size)
-            ):
-                pygame.mixer.music.load("roblox-death-sound_1.mp3")
-                pygame.mixer.music.play()
-                score += 1
-                snake2_xp += 1
-                if snake2_xp >= xp_needed:
-                    snake2_level += 1
-                    snake2_size += 10
-                    snake2_speed += 2
-                    snake2_xp = 0
-                    xp_needed *= 2
-                    level_up_sound.play()
-                food_x = (
-                    random.randint(0, screen_width - food_size) // food_size * food_size
-                )
-                food_y = (
-                    random.randint(0, screen_height - food_size) // food_size * food_size
-                )
-                if snake2_body:
-                    snake2_body.append(snake2_body[-1])
-                else:
-                    snake2_body.append((snake2_x, snake2_y))
-
-                snake2_length += 1
-                microtransaction_window = True
-        
-        #Check collision with other player 
-            if pygame.Rect(snake_x, snake_y, snake_size, snake_size).colliderect(
-                pygame.Rect(snake2_x, snake2_y, snake2_size, snake2_size)
-            ):
-                winner = 2 
-                game_over = True
-            if pygame.Rect(snake2_x, snake2_y, snake2_size, snake2_size).colliderect(
-                pygame.Rect(snake_x, snake_y, snake_size, snake_size)
-            ):
-                winner = 1 
-                game_over = True
-
             # Update food position
             food_x += food_dx
             food_y += food_dy
@@ -419,32 +315,19 @@ else:
             if len(snake_body) > snake_length:
                 snake_body.pop()
 
-            snake2_body.insert(0, (snake2_x, snake2_y))
-            if len(snake2_body) > snake2_length:
-                snake2_body.pop()
-
             # Check collision with snake body
             for body_part in snake_body[ignore_segments:]:
                 if pygame.Rect(snake_x, snake_y, snake_size, snake_size).colliderect(
                     pygame.Rect(body_part[0], body_part[1], snake_size, snake_size)
                 ):
-                    winner = 2
+                    
                     game_over = True
 
-            for body_part in snake2_body[ignore_segments:]:
-                if pygame.Rect(snake2_x, snake2_y, snake2_size, snake2_size).colliderect(
-                    pygame.Rect(body_part[0], body_part[1], snake2_size, snake2_size)
-                ):
-                    winner = 1
-                    game_over = True
+
             # Refresh the screen
             screen.blit(background_img, (0, 0))
             for body_part in snake_body:
                 screen.blit(snake_img, body_part)
-
-            for body_part in snake2_body:
-                screen.blit(snake2_img, body_part)
-            pygame.draw.rect(screen, food_color, (food_x, food_y, food_size, food_size))
 
             # Display score, level, and XP
             score_text = font.render("Score: " + str(score), True, (255, 255, 255))
@@ -495,6 +378,7 @@ else:
     # Define the credits
     credits_font_normal = pygame.font.Font("Roboto-Italic.ttf", 36)
     credits_font_bold = pygame.font.Font("Roboto-Bold.ttf", 36)
+    score_font_arabic = pygame.font.Font("Arabic.ttf", 36)
     credits_lines = [
         {"text": "SNAKE (version casse couilles)", "font": credits_font_bold},
         {"text": "Opéré par TON Ordinateur", "font": credits_font_normal},
@@ -534,7 +418,7 @@ else:
     #Display winning player 
     screen.fill((0, 0, 0))  # Clear screen
     for i, line in enumerate(credits_lines):
-        text = line["font"].render("Le gagnant est le joueur"+str(winner), True, (255, 255, 255))
+        text = score_font_arabic.render("Score final : "+str(score), True, (255, 255, 255))
         screen.blit(
             text,
             (
