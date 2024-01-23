@@ -138,18 +138,19 @@ def play_solo():
     ignore_segments = 7
 
     # Add lore
-    lore_font = pygame.font.Font(None, 24)
+    lore_font = pygame.font.Font(None, 36)
     lore_text = [
-        "Après s'être fait courser par Norman toute sa vie le mineur en a enfin marre et décide ",
-        "de le confronter en face à face pour l'attraper",
-        "L'aideras-tu a réussir dans sa quête ?",
+        "Oh non, j'ai oublié ma salle d'amphi de QSE",
+        "Il va falloir perdre un peu de temps pour ne pas arriver trop en avance",
+        "Je sais que tu as un peu faim, donc régale toi avec la nourriture",
+        "Mais attention elle va te fuire !"
     ]
     screen.fill((0, 0, 0))  # Clear screen
     for i, line in enumerate(lore_text):
         text = lore_font.render(line, True, (255, 255, 255))
         screen.blit(text, (500, 500 + i * 30))  # Adjust 30 for line spacing
     pygame.display.flip()
-    pygame.time.wait(10000)  # Show lore for 10 seconds
+    pygame.time.wait(8000)  # Show lore for 10 seconds
 
     mixer.init()
     mixer.music.load("Driftveil.mp3")
@@ -328,6 +329,7 @@ def play_solo():
             screen.blit(background_img, (0, 0))
             for body_part in snake_body:
                 screen.blit(snake_img, body_part)
+            pygame.draw.rect(screen, food_color, (food_x, food_y, food_size, food_size))
 
             # Display score, level, and XP
             score_text = font.render("Score: " + str(score), True, (255, 255, 255))
